@@ -1,8 +1,11 @@
 package com.example.habittracker.view
 
 import android.os.Bundle
-import android.view.*
-import android.widget.*
+import android.view.View
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
+import android.widget.Toast
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -19,12 +22,18 @@ class AddHabitFragment : Fragment(R.layout.fragment_add_habit) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val toolbar = view.findViewById<Toolbar>(R.id.toolbar)
         val etName = view.findViewById<TextInputEditText>(R.id.etHabitName)
         val etDesc = view.findViewById<TextInputEditText>(R.id.etDescription)
         val etGoal = view.findViewById<TextInputEditText>(R.id.etGoal)
         val etUnit = view.findViewById<TextInputEditText>(R.id.etUnit)
         val dropdownIcon = view.findViewById<AutoCompleteTextView>(R.id.actvSelectIcon)
         val btnSave = view.findViewById<MaterialButton>(R.id.btnCreateHabit)
+
+        // tombol back toolbar
+        toolbar.setNavigationOnClickListener {
+            findNavController().navigateUp()
+        }
 
         setupDropdown(dropdownIcon)
 
@@ -37,9 +46,11 @@ class AddHabitFragment : Fragment(R.layout.fragment_add_habit) {
             val iconName = dropdownIcon.text.toString()
 
             if (name.isEmpty() || desc.isEmpty() || goalText.isEmpty() || unit.isEmpty()) {
-                Toast.makeText(requireContext(),
+                Toast.makeText(
+                    requireContext(),
                     "Semua data harus diisi!",
-                    Toast.LENGTH_SHORT).show()
+                    Toast.LENGTH_SHORT
+                ).show()
                 return@setOnClickListener
             }
 
@@ -56,9 +67,11 @@ class AddHabitFragment : Fragment(R.layout.fragment_add_habit) {
 
             viewModel.insertHabit(habit)
 
-            Toast.makeText(requireContext(),
+            Toast.makeText(
+                requireContext(),
                 "Habit berhasil disimpan!",
-                Toast.LENGTH_SHORT).show()
+                Toast.LENGTH_SHORT
+            ).show()
 
             findNavController().navigateUp()
         }
@@ -66,7 +79,6 @@ class AddHabitFragment : Fragment(R.layout.fragment_add_habit) {
 
     private fun setupDropdown(dropdown: AutoCompleteTextView) {
         val options = listOf(
-            "Workout",
             "Belajar",
             "Minum Air",
             "Makan Sehat",

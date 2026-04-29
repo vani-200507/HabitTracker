@@ -1,7 +1,13 @@
 package com.example.habittracker.adapter
 
-import android.view.*
-import android.widget.*
+import android.graphics.Color
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.habittracker.R
 import com.example.habittracker.model.Habit
@@ -21,7 +27,6 @@ class HabitAdapter(
         val txtStatus: TextView = view.findViewById(R.id.tvStatus)
         val btnMinus: Button = view.findViewById(R.id.btnMinus)
         val btnPlus: Button = view.findViewById(R.id.btnPlus)
-        val txtUnit: TextView = view.findViewById(R.id.tvUnit)
         val stripDone: View = view.findViewById(R.id.vStripCompleted)
     }
 
@@ -39,24 +44,25 @@ class HabitAdapter(
         holder.apply {
             txtTitle.text = data.name
             txtDesc.text = data.description
-            txtUnit.text = data.unit
             imgIcon.setImageResource(data.icon)
 
             progressHabit.max = data.goal
             progressHabit.progress = data.progress
+
+            // hanya tampil: 5 / 5 Jam
             txtProgress.text = "${data.progress} / ${data.goal} ${data.unit}"
 
             val selesai = data.progress >= data.goal
 
             if (selesai) {
                 txtStatus.text = "Selesai"
-                txtStatus.setBackgroundColor(android.graphics.Color.parseColor("#4CAF50"))
+                txtStatus.setBackgroundColor(Color.parseColor("#4CAF50"))
                 btnPlus.isEnabled = false
                 btnMinus.isEnabled = false
                 stripDone.visibility = View.VISIBLE
             } else {
                 txtStatus.text = "Berjalan"
-                txtStatus.setBackgroundColor(android.graphics.Color.parseColor("#FF9800"))
+                txtStatus.setBackgroundColor(Color.parseColor("#FF9800"))
                 btnPlus.isEnabled = true
                 btnMinus.isEnabled = data.progress > 0
                 stripDone.visibility = View.GONE

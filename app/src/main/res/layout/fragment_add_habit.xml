@@ -17,8 +17,9 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="#4A148C"
-            app:title="Tambah Kebiasaan"
-            app:titleTextColor="#FFFFFF" />
+            app:title="Tambah Habit"
+            app:titleTextColor="#FFFFFF"
+            app:navigationIcon="@drawable/ic_arrow_back" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
