@@ -40,7 +40,7 @@ class LoginFragment : Fragment() {
                 pref.edit().putString("username", user).apply()
 
                 // pindah ke dashboard
-                //findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
+                findNavController().navigate(R.id.action_loginFragment_to_dashboardFragment)
             }
             else{
                 Toast.makeText(requireContext(), "Username atau Password salah!", Toast.LENGTH_SHORT).show()

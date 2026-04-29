@@ -10,13 +10,13 @@ class HabitViewModel(application: Application) : AndroidViewModel(application) {
 
     private val habitRepo = HabitRepository.getInstance(application)
 
-    val habits: LiveData<ArrayList<Habit>> = habitRepo.habitList
+    val habits: LiveData<ArrayList<Habit>> = habitRepo.habits
 
     fun insertHabit(habit: Habit) {
-        habitRepo.addHabit(habit)
+        habitRepo.insertHabit(habit)
     }
 
     fun changeProgress(habit: Habit, progressBaru: Int) {
-        habitRepo.updateProgress(habit, progressBaru)
+        habitRepo.changeProgress(habit, progressBaru)
     }
 }

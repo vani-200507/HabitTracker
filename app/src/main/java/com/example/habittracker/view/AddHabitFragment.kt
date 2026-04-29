@@ -1,60 +1,99 @@
 package com.example.habittracker.view
 
 import android.os.Bundle
+import android.view.*
+import android.widget.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import com.example.habittracker.R
+import com.example.habittracker.model.Habit
+import com.example.habittracker.viewmodel.HabitViewModel
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.textfield.TextInputEditText
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+class AddHabitFragment : Fragment(R.layout.fragment_add_habit) {
 
-/**
- * A simple [Fragment] subclass.
- * Use the [AddHabitFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class AddHabitFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private val viewModel: HabitViewModel by activityViewModels()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val etName = view.findViewById<TextInputEditText>(R.id.etHabitName)
+        val etDesc = view.findViewById<TextInputEditText>(R.id.etDescription)
+        val etGoal = view.findViewById<TextInputEditText>(R.id.etGoal)
+        val etUnit = view.findViewById<TextInputEditText>(R.id.etUnit)
+        val dropdownIcon = view.findViewById<AutoCompleteTextView>(R.id.actvSelectIcon)
+        val btnSave = view.findViewById<MaterialButton>(R.id.btnCreateHabit)
+
+        setupDropdown(dropdownIcon)
+
+        btnSave.setOnClickListener {
+
+            val name = etName.text.toString().trim()
+            val desc = etDesc.text.toString().trim()
+            val goalText = etGoal.text.toString().trim()
+            val unit = etUnit.text.toString().trim()
+            val iconName = dropdownIcon.text.toString()
+
+            if (name.isEmpty() || desc.isEmpty() || goalText.isEmpty() || unit.isEmpty()) {
+                Toast.makeText(requireContext(),
+                    "Semua data harus diisi!",
+                    Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val iconRes = getIcon(iconName)
+
+            val habit = Habit(
+                name = name,
+                description = desc,
+                goal = goalText.toInt(),
+                progress = 0,
+                unit = unit,
+                icon = iconRes
+            )
+
+            viewModel.insertHabit(habit)
+
+            Toast.makeText(requireContext(),
+                "Habit berhasil disimpan!",
+                Toast.LENGTH_SHORT).show()
+
+            findNavController().navigateUp()
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_add_habit, container, false)
+    private fun setupDropdown(dropdown: AutoCompleteTextView) {
+        val options = listOf(
+            "Workout",
+            "Belajar",
+            "Minum Air",
+            "Makan Sehat",
+            "Membaca",
+            "Tidur",
+            "Relaksasi"
+        )
+
+        val adapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_dropdown_item_1line,
+            options
+        )
+
+        dropdown.setAdapter(adapter)
+        dropdown.setText(options[0], false)
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment AddHabitFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            AddHabitFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    private fun getIcon(name: String): Int {
+        return when (name) {
+            "Belajar" -> R.drawable.ic_study
+            "Minum Air" -> R.drawable.ic_water
+            "Makan Sehat" -> R.drawable.ic_food
+            "Membaca" -> R.drawable.ic_reading
+            "Tidur" -> R.drawable.ic_sleep
+            "Relaksasi" -> R.drawable.ic_meditation
+            else -> R.drawable.ic_study
+        }
     }
 }
