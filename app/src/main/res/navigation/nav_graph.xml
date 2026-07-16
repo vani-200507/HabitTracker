@@ -7,32 +7,53 @@
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.example.habittracker.view.LoginFragment"
-        android:label="Login" >
+        android:label="Login">
+
         <action
             android:id="@+id/action_loginFragment_to_dashboardFragment"
             app:destination="@id/dashboardFragment"
             app:popUpTo="@id/loginFragment"
             app:popUpToInclusive="true" />
+
     </fragment>
 
     <fragment
         android:id="@+id/dashboardFragment"
         android:name="com.example.habittracker.view.DashboardFragment"
-        android:label="Dashboard" >
+        android:label="Dashboard">
+
         <action
             android:id="@+id/action_dashboardFragment_to_addHabitFragment"
             app:destination="@id/addHabitFragment" />
+
+        <action
+            android:id="@+id/action_dashboardFragment_to_editHabitFragment"
+            app:destination="@id/editHabitFragment" />
+
     </fragment>
 
     <fragment
         android:id="@+id/addHabitFragment"
         android:name="com.example.habittracker.view.AddHabitFragment"
-        android:label="Add Habit" >
+        android:label="Add Habit">
+
         <action
             android:id="@+id/action_addHabitFragment_to_dashboardFragment"
             app:destination="@id/dashboardFragment"
             app:popUpTo="@id/dashboardFragment"
             app:popUpToInclusive="false" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/editHabitFragment"
+        android:name="com.example.habittracker.view.EditHabitFragment"
+        android:label="Edit Habit">
+
+        <argument
+            android:name="habit"
+            app:argType="com.example.habittracker.model.Habit" />
+
     </fragment>
 
 </navigation>

@@ -39,7 +39,9 @@ class DashboardFragment : Fragment() {
         observeHabit()
 
         binding.fabAdd.setOnClickListener {
-            findNavController().navigate(R.id.action_dashboardFragment_to_addHabitFragment)
+            findNavController().navigate(
+                R.id.action_dashboardFragment_to_addHabitFragment
+            )
         }
     }
 
@@ -71,11 +73,23 @@ class DashboardFragment : Fragment() {
 
                 viewModel.deleteHabit(habit)
 
+            },
+
+            onEditClick = { habit ->
+
+                val action =
+                    DashboardFragmentDirections
+                        .actionDashboardFragmentToEditHabitFragment(habit)
+
+                findNavController().navigate(action)
+
             }
 
         )
 
-        binding.rvHabits.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvHabits.layoutManager =
+            LinearLayoutManager(requireContext())
+
         binding.rvHabits.adapter = habitAdapter
     }
 
@@ -94,6 +108,7 @@ class DashboardFragment : Fragment() {
                 binding.tvEmptyMessage.visibility = View.GONE
 
                 habitAdapter.updateData(it)
+
             }
 
         }

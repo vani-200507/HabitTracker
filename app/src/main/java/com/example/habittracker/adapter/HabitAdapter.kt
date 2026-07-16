@@ -11,7 +11,8 @@ class HabitAdapter(
     private val habitItems: ArrayList<Habit>,
     private val onAddClick: (Habit, Int) -> Unit,
     private val onReduceClick: (Habit, Int) -> Unit,
-    private val onDeleteClick: (Habit) -> Unit
+    private val onDeleteClick: (Habit) -> Unit,
+    private val onEditClick: (Habit) -> Unit
 ) : RecyclerView.Adapter<HabitAdapter.ViewHolder>() {
 
     class ViewHolder(val binding: HabitCardBinding)
@@ -65,6 +66,18 @@ class HabitAdapter(
 
         holder.binding.btnMinus.setOnClickListener {
             onReduceClick(habit, position)
+        }
+
+        holder.binding.root.setOnLongClickListener {
+
+            onDeleteClick(habit)
+
+            true
+        }
+
+        // Klik judul habit untuk edit
+        holder.binding.tvName.setOnClickListener {
+            onEditClick(habit)
         }
 
         holder.binding.executePendingBindings()
