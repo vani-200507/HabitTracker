@@ -1,5 +1,6 @@
 package com.example.habittracker.view
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -42,6 +43,21 @@ class DashboardFragment : Fragment() {
             findNavController().navigate(
                 R.id.action_dashboardFragment_to_addHabitFragment
             )
+        }
+
+        // Logout (Bonus Session)
+        binding.btnLogout.setOnClickListener {
+
+            val pref = requireActivity().getSharedPreferences(
+                "habit_pref",
+                Context.MODE_PRIVATE
+            )
+
+            pref.edit()
+                .clear()
+                .apply()
+
+            findNavController().navigate(R.id.loginFragment)
         }
     }
 
