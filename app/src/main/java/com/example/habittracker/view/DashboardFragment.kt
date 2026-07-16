@@ -65,7 +65,14 @@ class DashboardFragment : Fragment() {
                     viewModel.updateHabit(habit)
                 }
 
+            },
+
+            onDeleteClick = { habit ->
+
+                viewModel.deleteHabit(habit)
+
             }
+
         )
 
         binding.rvHabits.layoutManager = LinearLayoutManager(requireContext())

@@ -10,7 +10,8 @@ import com.example.habittracker.model.Habit
 class HabitAdapter(
     private val habitItems: ArrayList<Habit>,
     private val onAddClick: (Habit, Int) -> Unit,
-    private val onReduceClick: (Habit, Int) -> Unit
+    private val onReduceClick: (Habit, Int) -> Unit,
+    private val onDeleteClick: (Habit) -> Unit
 ) : RecyclerView.Adapter<HabitAdapter.ViewHolder>() {
 
     class ViewHolder(val binding: HabitCardBinding)
