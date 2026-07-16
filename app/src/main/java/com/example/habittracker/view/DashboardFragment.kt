@@ -39,13 +39,14 @@ class DashboardFragment : Fragment() {
         initRecycler()
         observeHabit()
 
+        // Tambah Habit
         binding.fabAdd.setOnClickListener {
             findNavController().navigate(
                 R.id.action_dashboardFragment_to_addHabitFragment
             )
         }
 
-        // Logout (Bonus Session)
+        // Logout
         binding.btnLogout.setOnClickListener {
 
             val pref = requireActivity().getSharedPreferences(
@@ -67,7 +68,7 @@ class DashboardFragment : Fragment() {
 
             habitItems = arrayListOf(),
 
-            onAddClick = { habit, _ ->
+            onAddClick = { habit ->
 
                 if (habit.progress < habit.goal) {
                     habit.progress++
@@ -76,7 +77,7 @@ class DashboardFragment : Fragment() {
 
             },
 
-            onReduceClick = { habit, _ ->
+            onReduceClick = { habit ->
 
                 if (habit.progress > 0) {
                     habit.progress--
@@ -111,9 +112,9 @@ class DashboardFragment : Fragment() {
 
     private fun observeHabit() {
 
-        viewModel.habits.observe(viewLifecycleOwner) {
+        viewModel.habits.observe(viewLifecycleOwner) { list ->
 
-            if (it.isEmpty()) {
+            if (list.isEmpty()) {
 
                 binding.rvHabits.visibility = View.GONE
                 binding.tvEmptyMessage.visibility = View.VISIBLE
@@ -123,7 +124,7 @@ class DashboardFragment : Fragment() {
                 binding.rvHabits.visibility = View.VISIBLE
                 binding.tvEmptyMessage.visibility = View.GONE
 
-                habitAdapter.updateData(it)
+                habitAdapter.updateData(list)
 
             }
 

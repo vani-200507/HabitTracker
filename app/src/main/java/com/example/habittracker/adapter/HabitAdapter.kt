@@ -6,11 +6,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.habittracker.databinding.HabitCardBinding
 import com.example.habittracker.model.Habit
+import com.example.habittracker.handler.HabitHandler
 
 class HabitAdapter(
     private val habitItems: ArrayList<Habit>,
-    private val onAddClick: (Habit, Int) -> Unit,
-    private val onReduceClick: (Habit, Int) -> Unit,
+    private val onAddClick: (Habit) -> Unit,
+    private val onReduceClick: (Habit) -> Unit,
     private val onDeleteClick: (Habit) -> Unit,
     private val onEditClick: (Habit) -> Unit
 ) : RecyclerView.Adapter<HabitAdapter.ViewHolder>() {
@@ -36,6 +37,15 @@ class HabitAdapter(
         val habit = habitItems[position]
 
         holder.binding.habit = habit
+        holder.binding.handler = HabitHandler(
+
+            onAdd = { onAddClick(it) },
+
+            onMinus = { onReduceClick(it) },
+
+            onEdit = { onEditClick(it) }
+
+        )
 
         holder.binding.ivIcon.setImageResource(habit.icon)
 
@@ -60,14 +70,6 @@ class HabitAdapter(
 
         }
 
-        holder.binding.btnPlus.setOnClickListener {
-            onAddClick(habit, position)
-        }
-
-        holder.binding.btnMinus.setOnClickListener {
-            onReduceClick(habit, position)
-        }
-
         holder.binding.root.setOnLongClickListener {
 
             onDeleteClick(habit)
@@ -75,10 +77,6 @@ class HabitAdapter(
             true
         }
 
-        // Klik judul habit untuk edit
-        holder.binding.tvName.setOnClickListener {
-            onEditClick(habit)
-        }
 
         holder.binding.executePendingBindings()
     }

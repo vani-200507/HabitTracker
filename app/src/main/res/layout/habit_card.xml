@@ -4,10 +4,15 @@
 
     <data>
 
+        <import type="com.example.habittracker.handler.HabitHandler"/>
+
         <variable
             name="habit"
             type="com.example.habittracker.model.Habit" />
 
+        <variable
+            name="handler"
+            type="HabitHandler" />
     </data>
 
     <androidx.cardview.widget.CardView
@@ -52,9 +57,10 @@
                 android:text="@{habit.name}"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                app:layout_constraintEnd_toStartOf="@id/tvStatus"
+                android:onClick="@{() -> handler.edit(habit)}"
                 app:layout_constraintStart_toEndOf="@id/ivIcon"
-                app:layout_constraintTop_toTopOf="@id/ivIcon" />
+                app:layout_constraintEnd_toStartOf="@id/tvStatus"
+                app:layout_constraintTop_toTopOf="@id/ivIcon"/>
 
             <TextView
                 android:id="@+id/tvDescription"
@@ -120,6 +126,7 @@
                 android:minWidth="0dp"
                 android:padding="0dp"
                 android:text="-"
+                android:onClick="@{() -> handler.minus(habit)}"
                 android:textColor="@android:color/white"
                 android:textSize="18sp"
                 android:textStyle="bold"
@@ -138,6 +145,7 @@
                 android:minWidth="0dp"
                 android:padding="0dp"
                 android:text="+"
+                android:onClick="@{() -> handler.add(habit)}"
                 android:textColor="@android:color/white"
                 android:textSize="18sp"
                 android:textStyle="bold"

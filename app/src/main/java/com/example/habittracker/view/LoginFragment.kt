@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.habittracker.R
 import com.example.habittracker.data.HabitDatabase
 import com.example.habittracker.databinding.FragmentLoginBinding
+import com.example.habittracker.model.User
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -38,17 +39,38 @@ class LoginFragment : Fragment() {
 
         db = HabitDatabase.buildDatabase(requireContext())
 
-        // BONUS: Auto Login
         val pref = requireActivity().getSharedPreferences(
             "habit_pref",
             Context.MODE_PRIVATE
         )
 
-        val isLogin = pref.getBoolean("is_login", false)
+        // Buat user default jika database masih kosong
+        lifecycleScope.launch {
 
-        if (isLogin) {
-            findNavController().navigate(R.id.action_loginFragment_to_dashboardFragment)
-            return
+            withContext(Dispatchers.IO) {
+
+                if (db.userDao().getUserCount() == 0) {
+
+                    db.userDao().insertUser(
+                        User(
+                            username = "student",
+                            password = "123"
+                        )
+                    )
+
+                }
+
+            }
+
+            // Bonus Auto Login
+            if (pref.getBoolean("is_login", false)) {
+
+                findNavController().navigate(
+                    R.id.action_loginFragment_to_dashboardFragment
+                )
+
+            }
+
         }
 
         binding.btnLogin.setOnClickListener {
@@ -104,4 +126,5 @@ class LoginFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
 }
