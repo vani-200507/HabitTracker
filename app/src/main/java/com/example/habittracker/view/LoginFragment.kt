@@ -2,49 +2,72 @@ package com.example.habittracker.view
 
 import android.content.Context
 import android.os.Bundle
-import android.view.*
-import android.widget.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.habittracker.R
+import com.example.habittracker.databinding.FragmentLoginBinding
 
 class LoginFragment : Fragment() {
 
+    private var _binding: FragmentLoginBinding? = null
+    private val binding get() = _binding!!
+
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_login, container, false)
+    ): View {
+
+        _binding = FragmentLoginBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val username = view.findViewById<EditText>(R.id.editUsername)
-        val password = view.findViewById<EditText>(R.id.editPassword)
-        val btnLogin = view.findViewById<Button>(R.id.btnLogin)
+        binding.btnLogin.setOnClickListener {
 
-        btnLogin.setOnClickListener {
+            val username = binding.editUsername.text.toString().trim()
+            val password = binding.editPassword.text.toString().trim()
 
-            val user = username.text.toString()
-            val pass = password.text.toString()
+            if (username.isEmpty() || password.isEmpty()) {
 
-            // validasi kosong
-            if(user.isEmpty() || pass.isEmpty()){
-                Toast.makeText(requireContext(), "Harap isi semua field", Toast.LENGTH_SHORT).show()
-            }
-            else if(user == "student" && pass == "123"){
+                Toast.makeText(
+                    requireContext(),
+                    "Harap isi semua field",
+                    Toast.LENGTH_SHORT
+                ).show()
 
-                // simpan username
-                val pref = requireActivity().getSharedPreferences("habit_pref", Context.MODE_PRIVATE)
-                pref.edit().putString("username", user).apply()
+            } else if (username == "student" && password == "123") {
 
-                // pindah ke dashboard
-                findNavController().navigate(R.id.action_loginFragment_to_dashboardFragment)
-            }
-            else{
-                Toast.makeText(requireContext(), "Username atau Password salah!", Toast.LENGTH_SHORT).show()
+                val pref = requireActivity()
+                    .getSharedPreferences("habit_pref", Context.MODE_PRIVATE)
+
+                pref.edit()
+                    .putString("username", username)
+                    .apply()
+
+                findNavController()
+                    .navigate(R.id.action_loginFragment_to_dashboardFragment)
+
+            } else {
+
+                Toast.makeText(
+                    requireContext(),
+                    "Username atau Password salah!",
+                    Toast.LENGTH_SHORT
+                ).show()
+
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
