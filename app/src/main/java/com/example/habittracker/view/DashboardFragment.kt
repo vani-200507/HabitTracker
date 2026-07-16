@@ -1,81 +1,100 @@
 package com.example.habittracker.view
 
 import android.os.Bundle
-import android.view.*
-import android.widget.TextView
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.habittracker.R
 import com.example.habittracker.adapter.HabitAdapter
+import com.example.habittracker.databinding.FragmentDashboardBinding
 import com.example.habittracker.viewmodel.HabitViewModel
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class DashboardFragment : Fragment() {
 
+    private var _binding: FragmentDashboardBinding? = null
+    private val binding get() = _binding!!
+
     private val viewModel: HabitViewModel by activityViewModels()
+
     private lateinit var habitAdapter: HabitAdapter
-    private lateinit var recyclerHabit: RecyclerView
-    private lateinit var btnAddHabit: FloatingActionButton
-    private lateinit var txtEmpty: TextView
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_dashboard, container, false)
+    ): View {
+
+        _binding = FragmentDashboardBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        recyclerHabit = view.findViewById(R.id.rvHabits)
-        btnAddHabit = view.findViewById(R.id.fabAdd)
-        txtEmpty = view.findViewById(R.id.tvEmptyMessage)
-
         initRecycler()
-        loadData()
+        observeHabit()
 
-        btnAddHabit.setOnClickListener {
+        binding.fabAdd.setOnClickListener {
             findNavController().navigate(R.id.action_dashboardFragment_to_addHabitFragment)
         }
     }
 
     private fun initRecycler() {
+
         habitAdapter = HabitAdapter(
+
             habitItems = arrayListOf(),
+
             onAddClick = { habit, _ ->
-                val updated = habit.progress + 1
-                if (updated <= habit.goal) {
-                    habit.progress = updated
+
+                if (habit.progress < habit.goal) {
+                    habit.progress++
                     viewModel.updateHabit(habit)
                 }
+
             },
+
             onReduceClick = { habit, _ ->
-                val updated = habit.progress - 1
-                if (updated >= 0) {
-                    habit.progress = updated
+
+                if (habit.progress > 0) {
+                    habit.progress--
                     viewModel.updateHabit(habit)
                 }
+
             }
         )
 
-        recyclerHabit.layoutManager = LinearLayoutManager(requireContext())
-        recyclerHabit.adapter = habitAdapter
+        binding.rvHabits.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvHabits.adapter = habitAdapter
     }
 
-    private fun loadData() {
-        viewModel.habits.observe(viewLifecycleOwner) { list ->
-            if (list.isEmpty()) {
-                recyclerHabit.visibility = View.GONE
-                txtEmpty.visibility = View.VISIBLE
+    private fun observeHabit() {
+
+        viewModel.habits.observe(viewLifecycleOwner) {
+
+            if (it.isEmpty()) {
+
+                binding.rvHabits.visibility = View.GONE
+                binding.tvEmptyMessage.visibility = View.VISIBLE
+
             } else {
-                habitAdapter.updateData(list)
-                recyclerHabit.visibility = View.VISIBLE
-                txtEmpty.visibility = View.GONE
+
+                binding.rvHabits.visibility = View.VISIBLE
+                binding.tvEmptyMessage.visibility = View.GONE
+
+                habitAdapter.updateData(it)
             }
+
         }
+
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
