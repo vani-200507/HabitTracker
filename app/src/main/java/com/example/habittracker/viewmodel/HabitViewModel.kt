@@ -1,22 +1,41 @@
 package com.example.habittracker.viewmodel
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import com.example.habittracker.data.HabitRepository
+import androidx.lifecycle.*
+import com.example.habittracker.data.HabitDatabase
 import com.example.habittracker.model.Habit
+import kotlinx.coroutines.launch
 
 class HabitViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val habitRepo = HabitRepository.getInstance(application)
+    private val dao = HabitDatabase
+        .buildDatabase(application)
+        .habitDao()
 
-    val habits: LiveData<ArrayList<Habit>> = habitRepo.habits
+    val habits = dao.getAllHabit()
 
     fun insertHabit(habit: Habit) {
-        habitRepo.insertHabit(habit)
+
+        viewModelScope.launch {
+            dao.insertHabit(habit)
+        }
+
     }
 
-    fun changeProgress(habit: Habit, progressBaru: Int) {
-        habitRepo.changeProgress(habit, progressBaru)
+    fun updateHabit(habit: Habit) {
+
+        viewModelScope.launch {
+            dao.updateHabit(habit)
+        }
+
     }
+
+    fun deleteHabit(habit: Habit) {
+
+        viewModelScope.launch {
+            dao.deleteHabit(habit)
+        }
+
+    }
+
 }

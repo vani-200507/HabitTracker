@@ -49,13 +49,15 @@ class DashboardFragment : Fragment() {
             onAddClick = { habit, _ ->
                 val updated = habit.progress + 1
                 if (updated <= habit.goal) {
-                    viewModel.changeProgress(habit, updated)
+                    habit.progress = updated
+                    viewModel.updateHabit(habit)
                 }
             },
             onReduceClick = { habit, _ ->
                 val updated = habit.progress - 1
                 if (updated >= 0) {
-                    viewModel.changeProgress(habit, updated)
+                    habit.progress = updated
+                    viewModel.updateHabit(habit)
                 }
             }
         )
