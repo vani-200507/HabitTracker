@@ -2,84 +2,71 @@ package com.example.habittracker.adapter
 
 import android.graphics.Color
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.habittracker.R
+import com.example.habittracker.databinding.HabitCardBinding
 import com.example.habittracker.model.Habit
 
 class HabitAdapter(
     private val habitItems: ArrayList<Habit>,
     private val onAddClick: (Habit, Int) -> Unit,
     private val onReduceClick: (Habit, Int) -> Unit
-) : RecyclerView.Adapter<HabitAdapter.HabitViewHolder>() {
+) : RecyclerView.Adapter<HabitAdapter.ViewHolder>() {
 
-    class HabitViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val imgIcon: ImageView = view.findViewById(R.id.ivIcon)
-        val txtTitle: TextView = view.findViewById(R.id.tvName)
-        val txtDesc: TextView = view.findViewById(R.id.tvDescription)
-        val progressHabit: ProgressBar = view.findViewById(R.id.progressBar)
-        val txtProgress: TextView = view.findViewById(R.id.tvProgress)
-        val txtStatus: TextView = view.findViewById(R.id.tvStatus)
-        val btnMinus: Button = view.findViewById(R.id.btnMinus)
-        val btnPlus: Button = view.findViewById(R.id.btnPlus)
-        val stripDone: View = view.findViewById(R.id.vStripCompleted)
+    class ViewHolder(val binding: HabitCardBinding)
+        : RecyclerView.ViewHolder(binding.root)
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+
+        val binding = HabitCardBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
+
+        return ViewHolder(binding)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HabitViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.habit_card, parent, false)
-        return HabitViewHolder(view)
-    }
+    override fun getItemCount() = habitItems.size
 
-    override fun getItemCount(): Int = habitItems.size
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-    override fun onBindViewHolder(holder: HabitViewHolder, position: Int) {
-        val data = habitItems[position]
+        val habit = habitItems[position]
 
-        holder.apply {
-            txtTitle.text = data.name
-            txtDesc.text = data.description
-            imgIcon.setImageResource(data.icon)
+        holder.binding.habit = habit
 
-            progressHabit.max = data.goal
-            progressHabit.progress = data.progress
+        holder.binding.ivIcon.setImageResource(habit.icon)
 
-            // hanya tampil: 5 / 5 Jam
-            txtProgress.text = "${data.progress} / ${data.goal} ${data.unit}"
+        holder.binding.progressBar.max = habit.goal
+        holder.binding.progressBar.progress = habit.progress
 
-            val selesai = data.progress >= data.goal
+        if (habit.progress >= habit.goal) {
 
-            if (selesai) {
-                txtStatus.text = "Selesai"
-                txtStatus.setBackgroundColor(Color.parseColor("#4CAF50"))
-                btnPlus.isEnabled = false
-                btnMinus.isEnabled = false
-                stripDone.visibility = View.VISIBLE
-            } else {
-                txtStatus.text = "Berjalan"
-                txtStatus.setBackgroundColor(Color.parseColor("#FF9800"))
-                btnPlus.isEnabled = true
-                btnMinus.isEnabled = data.progress > 0
-                stripDone.visibility = View.GONE
-            }
+            holder.binding.tvStatus.text = "Selesai"
 
-            btnPlus.setOnClickListener {
-                if (data.progress < data.goal) {
-                    onAddClick(data, position)
-                }
-            }
+            holder.binding.tvStatus.setBackgroundColor(
+                Color.parseColor("#4CAF50")
+            )
 
-            btnMinus.setOnClickListener {
-                if (data.progress > 0) {
-                    onReduceClick(data, position)
-                }
-            }
+        } else {
+
+            holder.binding.tvStatus.text = "Berjalan"
+
+            holder.binding.tvStatus.setBackgroundColor(
+                Color.parseColor("#FF9800")
+            )
+
         }
+
+        holder.binding.btnPlus.setOnClickListener {
+            onAddClick(habit, position)
+        }
+
+        holder.binding.btnMinus.setOnClickListener {
+            onReduceClick(habit, position)
+        }
+
+        holder.binding.executePendingBindings()
     }
 
     fun updateData(newData: List<Habit>) {
@@ -87,4 +74,5 @@ class HabitAdapter(
         habitItems.addAll(newData)
         notifyDataSetChanged()
     }
+
 }
